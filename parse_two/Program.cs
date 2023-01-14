@@ -1,4 +1,6 @@
 ﻿using parse_two;
+using System.Diagnostics;
+using System.Drawing;
 using System.Net;
 
 internal class Program
@@ -24,9 +26,8 @@ internal class Program
         string pathFile = "result.txt";
         using (StreamWriter result = File.CreateText(pathFile))
         {
-            result.WriteLine("flat_id|flat_num|building|floor|area|rooms|price|sprice|status|date");
         }
-
+        
         string strIndex = "http://2.ac-biryuzovaya-zhemchuzhina.ru/flats/";
         var startPos = getReqest.Response.IndexOf("<tbody>");
         while (true)
@@ -34,12 +35,12 @@ internal class Program
             startPos = getReqest.Response.IndexOf(strIndex, startPos) + strIndex.Length;
             var endPos = getReqest.Response.IndexOf("\">", startPos);
             var flatId = getReqest.Response.Substring(startPos, endPos - startPos);
-
+            
             startPos = endPos + 2;
             endPos = getReqest.Response.IndexOf("-комнатная", endPos);
             var rooms = getReqest.Response.Substring(startPos, endPos - startPos);
             if (rooms.IndexOf("Студия") != -1) rooms = "0";
-
+            
             startPos = getReqest.Response.IndexOf("<td>", endPos) + 4;
             endPos = getReqest.Response.IndexOf("</td>", startPos);
             var area = getReqest.Response.Substring(startPos, endPos - startPos);
@@ -57,23 +58,22 @@ internal class Program
             startPos = getReqest.Response.IndexOf("\"?floor=", endPos) + 13;
             endPos = getReqest.Response.IndexOf("</a></td>", startPos);
             var floor = getReqest.Response.Substring(startPos, endPos - startPos);
-
+            
             startPos = getReqest.Response.IndexOf("ru/flats", endPos) + 15;
             endPos = getReqest.Response.IndexOf("</a></td>", startPos);
             var flat_num = getReqest.Response.Substring(startPos, endPos - startPos);
-
+            
             startPos = getReqest.Response.IndexOf("<td>", endPos) + 4;
             startPos = getReqest.Response.IndexOf("<td>", startPos) + 4;
             startPos = getReqest.Response.IndexOf("<td>", startPos) + 4;
             endPos = getReqest.Response.IndexOf("</td>", startPos);
-            var building = getReqest.Response.Substring(startPos, endPos - startPos); ;
-
+            var building = getReqest.Response.Substring(startPos, endPos - startPos);
+            
             double sprice = double.Parse(price.Replace('.', ',')) / double.Parse(area.Replace('.', ','));
-
             sprice = Math.Round(sprice, 2);
-
+            
             DateTime date = DateTime.Now.Date;
-
+            
             using (StreamWriter result = File.AppendText(pathFile))
             {
                 result.WriteLine($"{flatId}|{flat_num}|{building}|{floor}|{area}|{rooms}|{price}|{sprice}|{status}|{date}");
@@ -82,6 +82,35 @@ internal class Program
             if (flatId == "4828") break;
 
             startPos = getReqest.Response.IndexOf("</tr>", startPos);
+        }
+
+
+        string[] scores = File.ReadAllLines("result.txt");
+        using (StreamWriter result = File.CreateText(pathFile))
+        {
+        }
+
+        
+            using (StreamWriter result = File.AppendText(pathFile))
+            {
+                result.WriteLine("flat_id|flat_num|building|floor|area|rooms|price|sprice|status|date");
+                
+                foreach (string str in RunQuery(scores))
+                {
+                    result.WriteLine(str);
+                }
+            }   
+
+
+        static IEnumerable<string> RunQuery(IEnumerable<string> source)
+        {
+            var scoreQuery = from line in source
+                                let fields = line.Split('|')
+                                orderby int.Parse(fields[2]), int.Parse(fields[3]), 
+                                int.Parse(fields[5]), int.Parse(fields[1])
+                                select line;
+
+            return scoreQuery;
         }
     }
 }
