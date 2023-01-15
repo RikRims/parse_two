@@ -18,9 +18,10 @@ namespace parse_three
         public string Accept { get; set; }
         public string UserAgent { get; set; }
         public string Host { get; set; }
-        public WebProxy Proxy{ get; set; }
+        public string Referer { get; set; }
+        public WebProxy Proxy { get; set; }
 
-        public GetReqest (string adres)
+        public GetReqest(string adres)
         {
             _adres = adres;
             Headers = new Dictionary<string, string>();
@@ -35,10 +36,11 @@ namespace parse_three
             _reqest.Accept = Accept;
             _reqest.Proxy = Proxy;
             _reqest.UserAgent = UserAgent;
+            _reqest.Referer = Referer;
 
             foreach (var item in Headers)
             {
-                _reqest.Headers.Add(item.Key, item.Value);  
+                _reqest.Headers.Add(item.Key, item.Value);
             }
 
             try
