@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "parse_two", "parse_two\parse_two.csproj", "{0CFFC58A-C696-4D20-9187-9887DAD2F53A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "parse_three", "parse_three\parse_three.csproj", "{0CFFC58A-C696-4D20-9187-9887DAD2F53A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
